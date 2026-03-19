@@ -1,0 +1,108 @@
+{
+  "config": {
+    "app_name": "Atmosfera",
+    "version": "2.0.0",
+    "default_unit": "C",
+    "cache_minutes": 10,
+    "forecast_days": 8,
+    "hourly_hours": 24
+  },
+
+  "quick_cities": [
+    { "name": "São Paulo",      "lat": -23.5505, "lon": -46.6333, "country": "Brasil",     "flag": "🇧🇷" },
+    { "name": "Rio de Janeiro", "lat": -22.9068, "lon": -43.1729, "country": "Brasil",     "flag": "🇧🇷" },
+    { "name": "Brasília",       "lat": -15.7801, "lon": -47.9292, "country": "Brasil",     "flag": "🇧🇷" },
+    { "name": "Manaus",         "lat":  -3.1190, "lon": -60.0217, "country": "Brasil",     "flag": "🇧🇷" },
+    { "name": "Lisboa",         "lat":  38.7169, "lon":  -9.1395, "country": "Portugal",   "flag": "🇵🇹" },
+    { "name": "Porto",          "lat":  41.1579, "lon":  -8.6291, "country": "Portugal",   "flag": "🇵🇹" },
+    { "name": "Tokyo",          "lat":  35.6762, "lon": 139.6503, "country": "Japão",      "flag": "🇯🇵" },
+    { "name": "New York",       "lat":  40.7128, "lon": -74.0060, "country": "EUA",        "flag": "🇺🇸" },
+    { "name": "London",         "lat":  51.5074, "lon":  -0.1278, "country": "Reino Unido","flag": "🇬🇧" },
+    { "name": "Paris",          "lat":  48.8566, "lon":   2.3522, "country": "França",     "flag": "🇫🇷" },
+    { "name": "Buenos Aires",   "lat": -34.6037, "lon": -58.3816, "country": "Argentina",  "flag": "🇦🇷" },
+    { "name": "Sydney",         "lat": -33.8688, "lon": 151.2093, "country": "Austrália",  "flag": "🇦🇺" }
+  ],
+
+  "wmo_codes": {
+    "0":  { "label": "Céu limpo",              "icon": "☀️",  "type": "clear"    },
+    "1":  { "label": "Principalmente limpo",   "icon": "🌤️",  "type": "pclear"   },
+    "2":  { "label": "Parcialmente nublado",   "icon": "⛅",  "type": "cloudy"   },
+    "3":  { "label": "Encoberto",              "icon": "☁️",  "type": "overcast" },
+    "45": { "label": "Névoa",                  "icon": "🌫️",  "type": "fog"      },
+    "48": { "label": "Névoa com geada",        "icon": "🌫️",  "type": "fog"      },
+    "51": { "label": "Garoa leve",             "icon": "🌦️",  "type": "drizzle"  },
+    "53": { "label": "Garoa moderada",         "icon": "🌦️",  "type": "drizzle"  },
+    "55": { "label": "Garoa intensa",          "icon": "🌧️",  "type": "rain"     },
+    "61": { "label": "Chuva leve",             "icon": "🌧️",  "type": "rain"     },
+    "63": { "label": "Chuva moderada",         "icon": "🌧️",  "type": "rain"     },
+    "65": { "label": "Chuva intensa",          "icon": "🌧️",  "type": "rain"     },
+    "71": { "label": "Neve leve",              "icon": "🌨️",  "type": "snow"     },
+    "73": { "label": "Neve moderada",          "icon": "❄️",  "type": "snow"     },
+    "75": { "label": "Neve intensa",           "icon": "❄️",  "type": "snow"     },
+    "77": { "label": "Grãos de neve",          "icon": "🌨️",  "type": "snow"     },
+    "80": { "label": "Pancadas leves",         "icon": "🌦️",  "type": "shower"   },
+    "81": { "label": "Pancadas moderadas",     "icon": "🌧️",  "type": "rain"     },
+    "82": { "label": "Pancadas violentas",     "icon": "⛈️",  "type": "storm"    },
+    "85": { "label": "Pancadas de neve",       "icon": "🌨️",  "type": "snow"     },
+    "86": { "label": "Pancadas de neve fortes","icon": "❄️",  "type": "snow"     },
+    "95": { "label": "Tempestade",             "icon": "⛈️",  "type": "storm"    },
+    "96": { "label": "Tempestade c/ granizo",  "icon": "⛈️",  "type": "storm"    },
+    "99": { "label": "Tempestade forte",       "icon": "🌩️",  "type": "storm"    }
+  },
+
+  "wind_directions": [
+    "N","NNE","NE","ENE",
+    "E","ESE","SE","SSE",
+    "S","SSO","SO","OSO",
+    "O","ONO","NO","NNO"
+  ],
+
+  "uv_levels": [
+    { "max": 2,  "label": "Baixo",      "color": "#4fffb0" },
+    { "max": 5,  "label": "Moderado",   "color": "#ffd060" },
+    { "max": 7,  "label": "Alto",       "color": "#ff8c42" },
+    { "max": 10, "label": "Muito alto", "color": "#ff5e7e" },
+    { "max": 99, "label": "Extremo",    "color": "#c060f0" }
+  ],
+
+  "visibility_levels": [
+    { "max": 1,  "label": "Muito baixa" },
+    { "max": 3,  "label": "Baixa"       },
+    { "max": 7,  "label": "Moderada"    },
+    { "max": 15, "label": "Boa"         },
+    { "max": 999,"label": "Excelente"   }
+  ],
+
+  "pressure_levels": [
+    { "max": 1000, "label": "Baixa — tempo instável" },
+    { "max": 1013, "label": "Normal"                 },
+    { "max": 1022, "label": "Alta — tempo estável"   },
+    { "max": 9999, "label": "Muito alta"             }
+  ],
+
+  "backgrounds": {
+    "clear-day"  : "radial-gradient(ellipse at 30% 20%, #0e3d7e 0%, #021026 60%)",
+    "clear-night": "radial-gradient(ellipse at 30% 20%, #03051a 0%, #000308 70%)",
+    "dawn"       : "radial-gradient(ellipse at 20% 30%, #5c1a6e 0%, #c85c2a 40%, #030a20 80%)",
+    "dusk"       : "radial-gradient(ellipse at 70% 20%, #7b2d00 0%, #c9481a 25%, #1a0a3d 60%)",
+    "cloudy"     : "radial-gradient(ellipse at 50% 0%, #1e2840 0%, #0b1220 70%)",
+    "overcast"   : "radial-gradient(ellipse at 50% 0%, #161e2e 0%, #08111e 70%)",
+    "fog"        : "radial-gradient(ellipse at 50% 50%, #1a2030 0%, #0a1018 70%)",
+    "drizzle"    : "radial-gradient(ellipse at 30% 10%, #0d2240 0%, #060f1e 70%)",
+    "rain"       : "radial-gradient(ellipse at 30% 10%, #0a1e3d 0%, #04101f 70%)",
+    "shower"     : "radial-gradient(ellipse at 30% 10%, #0a1e3d 0%, #04101f 70%)",
+    "snow"       : "radial-gradient(ellipse at 50% 0%, #1a2d4a 0%, #08111e 70%)",
+    "storm"      : "radial-gradient(ellipse at 20% 10%, #150011 0%, #050005 70%)"
+  },
+
+  "days_pt": ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"],
+
+  "messages": {
+    "loading"      : "Consultando dados do clima...",
+    "not_found"    : "Cidade não encontrada. Tente outro nome.",
+    "geo_error"    : "Não foi possível obter sua localização.",
+    "api_error"    : "Erro ao carregar dados. Verifique sua conexão.",
+    "geo_unsupport": "Geolocalização não suportada neste navegador.",
+    "search_short" : "Digite ao menos 2 caracteres para buscar."
+  }
+}

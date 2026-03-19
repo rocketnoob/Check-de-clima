@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Atmosfera — Previsão do tempo em tempo real para qualquer cidade do mundo." />
+  <title>Atmosfera ⛅ Clima em Tempo Real</title>
+
+  <!-- Google Fonts: Syne (display) + Fira Code (mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       Fundo animado: canvas de partículas + gradiente
+  ════════════════════════════════════════════════ -->
+  <div id="bg-scene">
+    <canvas id="particle-canvas"></canvas>
+    <div class="bg-gradient" id="bg-gradient"></div>
+    <div class="bg-overlay"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       Shell principal da aplicação
+  ════════════════════════════════════════════════ -->
+  <div class="app-shell">
+
+    <!-- Cabeçalho -->
+    <header class="site-header">
+      <div class="logo">
+        <span class="logo-mark">⬡</span>
+        <span class="logo-text">atmosfera</span>
+      </div>
+      <div class="header-right">
+        <div class="live-clock" id="live-clock">00:00:00</div>
+        <button class="unit-toggle" id="unit-toggle" aria-label="Alternar unidade de temperatura">
+          <span class="unit-opt active" data-unit="C">°C</span>
+          <span class="unit-sep">/</span>
+          <span class="unit-opt" data-unit="F">°F</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Busca -->
+    <section class="search-section" aria-label="Busca de cidades">
+      <div class="search-container">
+        <div class="search-field" id="search-field">
+          <span class="search-icon" aria-hidden="true">◎</span>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Buscar cidade..."
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Buscar cidade"
+            aria-autocomplete="list"
+            aria-controls="suggestions-list"
+          />
+          <button
+            class="geo-btn"
+            id="geo-btn"
+            title="Usar minha localização"
+            aria-label="Usar minha localização"
+          >◈</button>
+        </div>
+        <ul
+          class="suggestions-list"
+          id="suggestions-list"
+          role="listbox"
+          aria-label="Sugestões de cidades"
+        ></ul>
+      </div>
+    </section>
+
+    <!-- ── Tela: Boas-vindas ─────────────────────────────── -->
+    <section class="welcome-screen" id="welcome-screen" aria-live="polite">
+      <div class="welcome-content">
+        <div class="welcome-symbol" aria-hidden="true">⛅</div>
+        <h1 class="welcome-title">Clima em tempo real</h1>
+        <p class="welcome-sub">Busque qualquer cidade do mundo ou use sua localização.</p>
+        <!-- Cidades rápidas geradas via data.json pelo app.js -->
+        <div class="quick-links" aria-label="Cidades populares"></div>
+      </div>
+    </section>
+
+    <!-- ── Tela: Carregando ──────────────────────────────── -->
+    <section class="loading-screen" id="loading-screen" hidden aria-live="polite" aria-label="Carregando">
+      <div class="loader-ring" aria-hidden="true"></div>
+      <p class="loader-text">Consultando dados do clima...</p>
+    </section>
+
+    <!-- ── Tela: Erro ────────────────────────────────────── -->
+    <section class="error-screen" id="error-screen" hidden aria-live="assertive">
+      <div class="error-symbol" aria-hidden="true">⚠</div>
+      <p class="error-message" id="error-message">Algo deu errado.</p>
+      <button class="retry-btn" id="retry-btn">Tentar novamente</button>
+    </section>
+
+    <!-- ── Tela: Dados do clima ──────────────────────────── -->
+    <main class="weather-main" id="weather-main" hidden aria-live="polite">
+
+      <!-- Card principal: temperatura, ícone, barra do dia -->
+      <article class="card card--main" id="card-main" aria-label="Condições atuais">
+        <div class="card-location">
+          <div class="location-name" id="location-name">—</div>
+          <div class="location-meta" id="location-meta">—</div>
+        </div>
+        <div class="card-temp-block">
+          <div class="temp-value" id="temp-value" aria-label="Temperatura atual">—</div>
+          <div class="temp-details">
+            <div class="weather-icon" id="weather-icon" aria-hidden="true">🌤</div>
+            <div class="weather-label" id="weather-label">—</div>
+            <div class="feels-like"   id="feels-like">Sensação: —</div>
+            <div class="temp-range"   id="temp-range">↑ — ↓ —</div>
+          </div>
+        </div>
+        <!-- Barra nascer/pôr do sol -->
+        <div class="is-day-bar" aria-label="Progresso do dia">
+          <span class="sun-marker" id="sunrise-marker">🌅 —</span>
+          <div class="day-track" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <div class="day-progress" id="day-progress"></div>
+            <div class="sun-dot"      id="sun-dot"      aria-hidden="true"></div>
+          </div>
+          <span class="sun-marker" id="sunset-marker">🌇 —</span>
+        </div>
+      </article>
+
+      <!-- Grid de métricas (6 cards) -->
+      <section class="metrics-grid" id="metrics-grid" aria-label="Métricas detalhadas">
+
+        <div class="metric-card">
+          <div class="metric-icon" aria-hidden="true">💧</div>
+          <div class="metric-label">Umidade</div>
+          <div class="metric-value" id="m-humidity">—</div>
+          <div class="metric-bar"><div class="metric-bar-fill" id="bar-humidity" style="width:0%"></div></div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon" aria-hidden="true">💨</div>
+          <div class="metric-label">Vento</div>
+          <div class="metric-value" id="m-wind">—</div>
+          <div class="metric-sub"   id="m-wind-dir">—</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon" aria-hidden="true">🌡</div>
+          <div class="metric-label">Pressão</div>
+          <div class="metric-value"  id="m-pressure">—</div>
+          <div class="metric-sub"    id="m-pressure-status">—</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon" aria-hidden="true">☀</div>
+          <div class="metric-label">Índice UV</div>
+          <div class="metric-value" id="m-uv">—</div>
+          <div class="uv-scale">
+            <div class="uv-track" aria-label="Escala UV">
+              <div class="uv-fill" id="uv-fill"></div>
+            </div>
+            <div class="metric-sub" id="m-uv-label">—</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon" aria-hidden="true">👁</div>
+          <div class="metric-label">Visibilidade</div>
+          <div class="metric-value" id="m-visibility">—</div>
+          <div class="metric-sub"   id="m-visibility-label">—</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon" aria-hidden="true">🌧</div>
+          <div class="metric-label">Chuva Hoje</div>
+          <div class="metric-value" id="m-rain">—</div>
+          <div class="metric-sub"   id="m-rain-prob">—</div>
+        </div>
+
+      </section>
+
+      <!-- Previsão horária: próximas 24h -->
+      <section class="card card--scroll" aria-label="Previsão horária">
+        <h2 class="card-title">Próximas 24 horas</h2>
+        <div class="hourly-track" id="hourly-track"></div>
+      </section>
+
+      <!-- Previsão semanal: 7 dias -->
+      <section class="card card--forecast" aria-label="Previsão semanal">
+        <h2 class="card-title">Próximos 7 dias</h2>
+        <div class="forecast-list" id="forecast-list"></div>
+      </section>
+
+      <!-- Rodapé -->
+      <footer class="site-footer">
+        <span>
+          Dados: <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+          &amp; <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>
+        </span>
+        <span id="last-updated">—</span>
+        <span class="cache-badge" id="cache-badge" hidden>⚡ cache</span>
+      </footer>
+
+    </main>
+  </div><!-- /app-shell -->
+
+  <!--
+    ═══════════════════════════════════════════════
+    Scripts — ordem de carregamento obrigatória:
+      1. particles.js  → ParticleSystem (sem dependências)
+      2. weather.js    → WeatherAPI     (sem dependências)
+      3. ui.js         → UI             (usa AppData + ParticleSystem)
+      4. app.js        → controlador    (usa tudo acima)
+    ═══════════════════════════════════════════════
+  -->
+  <script src="js/particles.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
